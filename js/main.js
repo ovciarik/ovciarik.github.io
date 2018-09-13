@@ -119,8 +119,8 @@ function tableCreate() {
         let tr = document.createElement('tr');
         for (let pos_y of intGenerator(0, 100)){
             let td = document.createElement('td');
-            td.height = 15
-            td.width = 15
+            td.height = 10
+            td.style['min-width'] = '10px'
             td.style.border = '1px solid #000000'
             td.style.background = 'green'
             td.id = `${pos_x}_${pos_y}`
