@@ -109,6 +109,10 @@ function playPauseToggle(){
     PLAY_PAUSE = !PLAY_PAUSE
 }
 
+function edit(){
+    PLAY_PAUSE = false
+}
+
 function nextStep(){
     if (!PLAY_PAUSE){
         STATE = calculateNextState(STATE)
@@ -243,6 +247,7 @@ function init(){
     // Add event listeners
     document.getElementById('playPauseButton').onclick = playPauseToggle
     document.getElementById('nextStepButton').onclick = nextStep
+    document.getElementById('editButton').onclick = edit
     document.getElementById('clearButton').onclick = clear
     document.getElementById('chaosPatternButton').onclick = chaosPattern
     document.getElementById('gliderGunButton').onclick = gliderGun

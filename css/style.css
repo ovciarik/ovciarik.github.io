@@ -36,9 +36,10 @@ body {
     float: left;
     color: #9499a5;
     text-align: center;
-    padding: 14px 16px;
+    padding: 14px 14px;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .topnav button:hover {
@@ -47,13 +48,13 @@ body {
 }
 
 #universe {
-    padding-top: 15px;
-    padding-left: 15px;
+    padding: 10px 10px 10px 10px
 }
 
 input[type="file"] {
     display: none;
 }
+
 .custom-file-upload {
     background: none;
     box-shadow: none;
@@ -62,9 +63,10 @@ input[type="file"] {
     float: left;
     color: #9499a5;
     text-align: center;
-    padding: 12px 16px;
+    padding: 12px 14px;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 14px;
+    font-weight: bold;
     /* height: 22px; */
 }
 .custom-file-upload:hover {
