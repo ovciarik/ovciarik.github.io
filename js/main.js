@@ -130,8 +130,6 @@ function tableCreate() {
   }
   universe.appendChild(tbl)
 }
-tableCreate()
-
 
 function changeTable(state){
     let pos_x = 0
@@ -157,7 +155,6 @@ function sleep(ms) {
 
 function getNewState(state){
     let newState = []
-
     let pos_x = 0
     for (row of state){
         let newRow = []
@@ -178,31 +175,24 @@ function getNewState(state){
                 newRow.push(0)
             } else {
                 newRow.push(1)
-
             }
-
             pos_y += 1
         }
         newState.push(newRow)
         pos_x += 1
     }
     return newState
-
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-  
-async function demo() {
-    await sleep(1);
+function main_loop(){
     u = getNewState(u)
     changeTable(u)
-    demo()
+    window.setTimeout(main_loop, 50)
 }
 
 function main(){
-    demo()
+    tableCreate()
+    main_loop()
 }
 
 main()
