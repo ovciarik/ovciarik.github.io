@@ -12,6 +12,9 @@
             "warn",
             4
         ],
+        "no-console":[
+            "warn"
+        ],
         "no-unused-vars": 0,
         "linebreak-style": [
             "warn",

@@ -15,13 +15,11 @@ green
 body {
     background-color: #4f4f57;
     font-family: 'Source Code Pro', monospace;
-    /* font-family: monospace; */
 }
 
 .topnav {
     background-color: #2a2b2f;
     overflow: hidden;
-
 }
 
 .topnav button {
@@ -44,7 +42,9 @@ body {
 }
 
 #universe {
-    padding: 10px 10px 10px 10px
+    padding: 0px 0px 0px 0px;
+    background: #2a2b2f;
+    min-height: 100vh;
 }
 
 input[type="file"] {
@@ -63,7 +63,6 @@ input[type="file"] {
     text-decoration: none;
     font-size: 14px;
     font-weight: bold;
-    /* height: 22px; */
 }
 
 .custom-file-upload:hover {
