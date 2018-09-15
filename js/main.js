@@ -366,11 +366,13 @@ function changeDrawingAPI(){
     PLAY_PAUSE = false
 
     if (INIT_FN == initCanvas){
+        document.getElementById('changeDrawingAPIButton').innerHTML = 'Change Drawing API (Current: Table)'
         INIT_FN = initTable
         REDEAW_FN = redrawTable
         REZOOM_FN = rezoomTable
         EDIT_FN = editTableCell
     } else {
+        document.getElementById('changeDrawingAPIButton').innerHTML = 'Change Drawing API (Current: Canvas)'
         INIT_FN = initCanvas
         REDEAW_FN = redrawCanvas
         REZOOM_FN = rezoomCanvas
