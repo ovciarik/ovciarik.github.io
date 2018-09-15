@@ -1,15 +1,15 @@
-const DIMENSION_X = 150 
-const DIMENSION_Y = 150
+const DIMENSION_Y = 200 
+const DIMENSION_X = 200
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
 const LIGHT_GREY = '#9499a5'
 const GREEN = '#2e8b57'
 
-const DIMENSION_X_1 = DIMENSION_X-1 
-const DIMENSION_Y_1 = DIMENSION_Y-1
+const DIMENSION_X_1 = DIMENSION_X-1
+const DIMENSION_Y_1 = DIMENSION_Y-1 
 
-let STATE = []
+let UNIVERSE = []
 let PLAY_PAUSE = true
 let ZOOM_LEVEL = 10
 
@@ -57,12 +57,12 @@ function generateGliderGun(state){
 // logic
 function calculateNextState(state){
     let newState = []
-    for (let x=0; x<DIMENSION_X; x++){
+    for (let x=0; x<DIMENSION_Y; x++){
         let newRow = []
-        for (let y=0; y<DIMENSION_Y; y++){
+        for (let y=0; y<DIMENSION_X; y++){
             let cell = state[x][y]
 
-            if (x > 0 && y > 0 && x < DIMENSION_X_1 && y < DIMENSION_Y_1) {
+            if (x > 0 && y > 0 && x < DIMENSION_Y_1 && y < DIMENSION_X_1) {
                 let aliveNeighbors = state[x-1][y-1] + state[x-1][y] + state[x-1][y+1] + state[x][y-1] + state[x][y+1] + state[x+1][y-1] + state[x+1][y] + state[x+1][y+1]
                 if ( ( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ){
                     newRow.push(0)
@@ -111,8 +111,8 @@ function initCanvas(state){
     universe.innerHTML = ''
     let canvas = document.createElement('canvas')
     canvas.id = 'mainCanvas'
-    canvas.width = DIMENSION_Y*ZOOM_LEVEL
-    canvas.height = DIMENSION_X*ZOOM_LEVEL
+    canvas.width = DIMENSION_X*ZOOM_LEVEL
+    canvas.height = DIMENSION_Y*ZOOM_LEVEL
     let ctx = canvas.getContext('2d')
 
     ctx.fillStyle = LIGHT_GREY
@@ -152,7 +152,7 @@ function redrawCanvas(state){
             } else {
                 ctx.fillStyle = GREEN
             }
-            ctx.fillRect(y, x, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
+            ctx.fillRect(y+1, x+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
             y += ZOOM_LEVEL
         })
         x += ZOOM_LEVEL
@@ -163,8 +163,8 @@ function redrawCanvas(state){
 
 function rezoomCanvas(){
     let canvas =  document.getElementById('mainCanvas')
-    canvas.width = DIMENSION_Y*ZOOM_LEVEL
-    canvas.height = DIMENSION_X*ZOOM_LEVEL
+    canvas.width = DIMENSION_X*ZOOM_LEVEL
+    canvas.height = DIMENSION_Y*ZOOM_LEVEL
     let ctx = canvas.getContext('2d')
 
     ctx.fillStyle = LIGHT_GREY
@@ -190,20 +190,21 @@ function editCanvasCell(e){
     let y = e.clientY - canvas.offsetTop
     let xx = Math.floor(x/ZOOM_LEVEL)
     let yy = Math.floor(y/ZOOM_LEVEL)
-    let currentState = STATE[yy][xx]
+    let currentState = UNIVERSE[yy][xx]
 
     if (currentState === 1) {
-        STATE[yy][xx] = 0
+        UNIVERSE[yy][xx] = 0
     } else {
-        STATE[yy][xx] = 1
+        UNIVERSE[yy][xx] = 1
     }
 
-    REDEAW_FN(STATE)
+    REDEAW_FN(UNIVERSE)
 }
 
 // HTML Table
 function initTable(state){
     let universe = document.getElementById('universe')
+    let zoomLevel = ZOOM_LEVEL-3
     universe.innerHTML = ''
     let table = document.createElement('table')
     table.style.border = '1px solid #2a2b2f'
@@ -214,8 +215,8 @@ function initTable(state){
         let tr = document.createElement('tr')
         row.forEach(_ => {
             let td = document.createElement('td')
-            td.style['height'] = `${ZOOM_LEVEL}px`
-            td.style['min-width'] = `${ZOOM_LEVEL}px`
+            td.style['height'] = `${zoomLevel}px`
+            td.style['min-width'] = `${zoomLevel}px`
             td.style.border = '1px solid #2a2b2f'
             td.style.background = '#4f4f57'
             td.id = `${x}_${y}`
@@ -252,13 +253,14 @@ function redrawTable(state){
 }
 
 function rezoomTable(state){
+    let zoomLevel = ZOOM_LEVEL-3
     let x = 0
     state.forEach(row => {
         let y = 0
         row.forEach(_ => {
             let elem = document.getElementById(`${x}_${y}`)
-            elem.style['height'] = `${ZOOM_LEVEL}px`
-            elem.style['min-width'] = `${ZOOM_LEVEL}px`
+            elem.style['height'] = `${zoomLevel}px`
+            elem.style['min-width'] = `${zoomLevel}px`
             y += 1
         })
         x += 1
@@ -269,14 +271,14 @@ function rezoomTable(state){
 function editTableCell(cell){
     let x = cell['target']['id'].split('_')[0]
     let y = cell['target']['id'].split('_')[1]
-    let currentState = STATE[x][y]
+    let currentState = UNIVERSE[x][y]
 
     if (currentState === 1) {
-        STATE[x][y] = 0
+        UNIVERSE[x][y] = 0
     } else {
-        STATE[x][y] = 1
+        UNIVERSE[x][y] = 1
     }
-    redrawTable(STATE)
+    redrawTable(UNIVERSE)
 }
 
 // button callbacks
@@ -291,51 +293,51 @@ function edit(){
 
 function nextStep(){
     if (!PLAY_PAUSE){
-        STATE = calculateNextState(STATE)
+        UNIVERSE = calculateNextState(UNIVERSE)
         // redrawTable(STATE)
-        REDEAW_FN(STATE)
+        REDEAW_FN(UNIVERSE)
 
     }
 }
 
 function clear(){
-    STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
+    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
     // redrawTable(STATE)
-    REDEAW_FN(STATE)
+    REDEAW_FN(UNIVERSE)
 }
 
 function chaosPattern(){
-    STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
-    STATE = generateChaosPattern(STATE)
-    REDEAW_FN(STATE)
+    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    UNIVERSE = generateChaosPattern(UNIVERSE)
+    REDEAW_FN(UNIVERSE)
     // redrawTable(STATE)
 }
 
 function gliderGun(){
-    STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
-    STATE = generateGliderGun(STATE)
-    REDEAW_FN(STATE)
+    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    UNIVERSE = generateGliderGun(UNIVERSE)
+    REDEAW_FN(UNIVERSE)
     // redrawTable(STATE)
 }
 
 function zoomIn(){
     ZOOM_LEVEL += 1
-    REZOOM_FN(STATE)
+    REZOOM_FN(UNIVERSE)
     // rezoomTable(STATE)
 }
 
 function zoomOut(){
     ZOOM_LEVEL -= 1
-    REZOOM_FN(STATE)
+    REZOOM_FN(UNIVERSE)
     // rezoomTable(STATE)
 }
 
 function readSuccess(content){
     let pattern = JSON.parse(content.target.result)['state']
-    STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
-    STATE =  generatePattern(STATE, pattern, 0, 0)
+    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    UNIVERSE =  generatePattern(UNIVERSE, pattern, 0, 0)
     // redrawTable(STATE)
-    REDEAW_FN(STATE)
+    REDEAW_FN(UNIVERSE)
 }
 
 function fnImport(param){
@@ -347,7 +349,7 @@ function fnImport(param){
 
 function fnExport(){
     let filename = 'gol.json'
-    let jsonFile = JSON.stringify({'state': STATE})
+    let jsonFile = JSON.stringify({'state': UNIVERSE})
     let blob = new Blob([jsonFile], { type: 'text/json;charset=utf-8;' })
     let link = document.createElement('a')
     let url = URL.createObjectURL(blob)
@@ -379,8 +381,8 @@ function changeDrawingAPI(){
         EDIT_FN = editCanvasCell
     }
 
-    INIT_FN(STATE)
-    REDEAW_FN(STATE)
+    INIT_FN(UNIVERSE)
+    REDEAW_FN(UNIVERSE)
 
     PLAY_PAUSE = oldPlayState
 }
@@ -402,19 +404,19 @@ function init(){
     document.getElementById('changeDrawingAPIButton').onclick = changeDrawingAPI
 
     // generate initial state
-    STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
-    STATE = generateChaosPattern(STATE)
+    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    UNIVERSE = generateChaosPattern(UNIVERSE)
 
-    INIT_FN(STATE)
-    REDEAW_FN(STATE)
+    INIT_FN(UNIVERSE)
+    REDEAW_FN(UNIVERSE)
 
 }
 
 function mainLoop(){
     if (PLAY_PAUSE){
         let startTime = Date.now()
-        STATE = calculateNextState(STATE)
-        REDEAW_FN(STATE)
+        UNIVERSE = calculateNextState(UNIVERSE)
+        REDEAW_FN(UNIVERSE)
         let stopTime = Date.now()
         let totalLoopTime = stopTime-startTime
         let fps = Math.floor(1000/totalLoopTime)
