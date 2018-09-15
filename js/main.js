@@ -1,5 +1,7 @@
 const DIMENSION_X = 150 
+const DIMENSION_X_1 = DIMENSION_X-1 
 const DIMENSION_Y = 150
+const DIMENSION_Y_1 = DIMENSION_Y-1
 
 let STATE = []
 let PLAY_PAUSE = true
@@ -12,7 +14,7 @@ function* intGenerator(start, stop){
     }
 }
 
-function drawTable(state) {
+function drawTable(state){
     let universe = document.getElementById('universe')
     let table = document.createElement('table')
     table.style.border = '1px solid #2a2b2f'
@@ -76,32 +78,24 @@ function rezoomTable(state){
 
 function calculateNextState(state){
     let newState = []
-    let pos_x = 0
-    state.forEach(row => {
+    for (let x=0; x<DIMENSION_X; x++){
         let newRow = []
-        let pos_y = 0
-        row.forEach(cell => {
-            let n0 = (state[pos_x-1] && state[pos_x-1][pos_y-1]) || 0
-            let n1 = (state[pos_x-1] && state[pos_x-1][pos_y]) || 0
-            let n2 = (state[pos_x-1] && state[pos_x-1][pos_y+1]) || 0
-            let n3 = (state[pos_x] && state[pos_x][pos_y-1]) || 0
-            let n4 = (state[pos_x] && state[pos_x][pos_y+1]) || 0
-            let n5 = (state[pos_x+1] && state[pos_x+1][pos_y-1]) || 0
-            let n6 = (state[pos_x+1] && state[pos_x+1][pos_y]) || 0
-            let n7 = (state[pos_x+1] && state[pos_x+1][pos_y+1]) || 0
+        for (let y=0; y<DIMENSION_Y; y++){
+            let cell = state[x][y]
 
-            let aliveNeighbors = [n0, n1, n2, n3, n4, n5, n6, n7].reduce((a, b) => {return a+b})
-
-            if (((cell === 0) && (aliveNeighbors !== 3)) || ((cell === 1)&&(aliveNeighbors <= 1)) || ((cell === 1)&&(aliveNeighbors >= 4))){
-                newRow.push(0)
+            if (x > 0 && y > 0 && x < DIMENSION_X_1 && y < DIMENSION_Y_1) {
+                let aliveNeighbors = state[x-1][y-1] + state[x-1][y] + state[x-1][y+1] + state[x][y-1] + state[x][y+1] + state[x+1][y-1] + state[x+1][y] + state[x+1][y+1]
+                if (((cell === 0) && (aliveNeighbors !== 3)) || ((cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ))){
+                    newRow.push(0)
+                } else {
+                    newRow.push(1)
+                }
             } else {
-                newRow.push(1)
+                newRow.push(0)
             }
-            pos_y += 1
-        })
+        }
         newState.push(newRow)
-        pos_x += 1
-    })
+    }
     return newState
 }
 
@@ -214,7 +208,6 @@ function zoomOut(){
     rezoomTable(STATE)
 }
 
-
 function readSuccess(content){
     let pattern = JSON.parse(content.target.result)['state']
     STATE = generateInitialState(DIMENSION_X, DIMENSION_Y)
@@ -278,10 +271,21 @@ function init(){
 }
 
 function main_loop(){
+    // let startTime = Date.now()
     if (PLAY_PAUSE){
+        // let stateStartTime = Date.now()
         STATE = calculateNextState(STATE)
+        // let stateStopTime = Date.now()
+        // let redrawStartTime = Date.now()
         redrawTable(STATE)
+        // let redrawStopTime = Date.now()
+        // let stateCalculationTime = stateStopTime-stateStartTime
+        // console.log(`state calculation time: ${stateCalculationTime}`)
+        // redrawTime = redrawStopTime - redrawStartTime
+        // console.log(`redraw time: ${redrawTime}`)
     }
+    // let stopTime = Date.now()
+    // console.log(stopTime-startTime)
     window.setTimeout(main_loop, 1)
 }
 

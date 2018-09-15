@@ -10,7 +10,6 @@ light grey
 
 green
 #2e8b57
-
 */
 
 body {
@@ -19,15 +18,12 @@ body {
     /* font-family: monospace; */
 }
 
-/* Add a black background color to the top navigation */
 .topnav {
     background-color: #2a2b2f;
     overflow: hidden;
-    /* border-bottom: 1px solid #9499a5; */
 
 }
 
-/* Style the links inside the navigation bar */
 .topnav button {
     background: none;
     box-shadow: none;
@@ -69,20 +65,8 @@ input[type="file"] {
     font-weight: bold;
     /* height: 22px; */
 }
+
 .custom-file-upload:hover {
     background-color: #9499a5;
     color: #2a2b2f;
 }
-/* Change the color of links on hover */
-/* .topnav a:hover {
-    background-color: #9499a5;
-    color: #2a2b2f;
-} */
-
-
-/* Add a color to the active/current link */
-/* .topnav a.active { */
-    /* background-color: #4CAF50; */
-    /* color: #9499a5; */
-/* } */
-
