@@ -165,8 +165,8 @@ function redrawCanvas(state){
 function rezoomCanvas(){
     let canvas =  document.getElementById('mainCanvas')
     let ctx = canvas.getContext('2d')
-    canvas.width = DIMENSION_X*ZOOM_LEVEL
-    canvas.height = DIMENSION_Y*ZOOM_LEVEL
+    canvas.width = (DIMENSION_X-2)*ZOOM_LEVEL
+    canvas.height = (DIMENSION_Y-2)*ZOOM_LEVEL
 
     ctx.fillStyle = LIGHT_GREY
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -184,6 +184,8 @@ function rezoomCanvas(){
         ctx.strokeStyle = DARK_GREY
         ctx.stroke()
     }
+
+    redrawCanvas(UNIVERSE)
 }
 
 function editCanvasCell(e){
@@ -276,9 +278,11 @@ function rezoomTable(state){
     state.forEach(row => {
         let y = 0
         row.forEach(_ => {
-            let elem = document.getElementById(`${x}_${y}`)
-            elem.style['height'] = `${zoomLevel}px`
-            elem.style['min-width'] = `${zoomLevel}px`
+            if (x > 0 && y > 0 && x < DIMENSION_Y_1 && y < DIMENSION_X_1){
+                let elem = document.getElementById(`${x}_${y}`)
+                elem.style['height'] = `${zoomLevel}px`
+                elem.style['min-width'] = `${zoomLevel}px`
+            }
             y += 1
         })
         x += 1
