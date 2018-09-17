@@ -12,6 +12,7 @@ const DIMENSION_Y_1 = DIMENSION_Y-1
 let UNIVERSE = []
 let PLAY_PAUSE = true
 let ZOOM_LEVEL = 10
+let EDIT_TOOL_TEMPLATE = []
 
 let INIT_FN = initCanvas
 let REDEAW_FN = redrawCanvas
@@ -188,6 +189,40 @@ function rezoomCanvas(){
     redrawCanvas(UNIVERSE)
 }
 
+function canvasDrawTemplate(mouseX, mouseY, template){
+
+    mouseX = Math.floor(mouseX/ZOOM_LEVEL)*ZOOM_LEVEL
+    mouseY = Math.floor(mouseY/ZOOM_LEVEL)*ZOOM_LEVEL
+
+    let templateSizeX = template[0].length
+    let templateSizeY = template.length
+
+    let canvas = document.getElementById('mainCanvas')
+    let ctx = canvas.getContext('2d')
+
+    // ctx.fillStyle = LIGHT_GREY
+    // ctx.fillRect(mouseX+1, mouseY+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
+
+    for(let y=0; y<templateSizeY; y++){
+        for(let x=0; x<templateSizeX; x++){
+
+            let cell = template[y][x]
+
+            if (cell === 0) {
+                ctx.fillStyle = LIGHT_GREY
+
+            } else {
+                ctx.fillStyle = GREEN
+            }
+
+            ctx.fillRect(mouseX+(x*ZOOM_LEVEL)+1, mouseY+(y*ZOOM_LEVEL)+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
+
+        }
+    }
+                
+
+}
+
 function editCanvasCell(e){
     let canvas = document.getElementById('mainCanvas')
     let rect = canvas.getBoundingClientRect()
@@ -198,11 +233,30 @@ function editCanvasCell(e){
     let yy = Math.floor(y/ZOOM_LEVEL)+1
     let currentState = UNIVERSE[yy][xx]
 
-    if (currentState === 1) {
-        UNIVERSE[yy][xx] = 0
+
+
+    // canvasDrawTemplate(x, y, TEMPLATE)
+
+    if (!(EDIT_TOOL_TEMPLATE && EDIT_TOOL_TEMPLATE.length > 0)){
+        if (currentState === 1) {
+            UNIVERSE[yy][xx] = 0
+        } else {
+            UNIVERSE[yy][xx] = 1
+        }
     } else {
-        UNIVERSE[yy][xx] = 1
+        let a = 0
+        EDIT_TOOL_TEMPLATE.forEach( aa => {
+            let b = 0 
+            aa.forEach( bb => {
+                UNIVERSE[yy+b][xx+a] = bb
+                // console.log(bb)
+
+                b += 1
+            })
+            a += 1
+        })
     }
+
 
     REDEAW_FN(UNIVERSE)
 }
@@ -296,10 +350,22 @@ function editTableCell(cell){
     let y = cell['target']['id'].split('_')[1]
     let currentState = UNIVERSE[x][y]
 
-    if (currentState === 1) {
-        UNIVERSE[x][y] = 0
+    if (!(EDIT_TOOL_TEMPLATE && EDIT_TOOL_TEMPLATE.length > 0)){
+        if (currentState === 1) {
+            UNIVERSE[x][y] = 0
+        } else {
+            UNIVERSE[x][y] = 1
+        }
     } else {
-        UNIVERSE[x][y] = 1
+        let a = 0
+        EDIT_TOOL_TEMPLATE.forEach( aa => {
+            let b = 0 
+            aa.forEach( bb => {
+                UNIVERSE[Number(x)+a][Number(y)+b] = bb
+                b += 1
+            })
+            a += 1
+        })
     }
 
     redrawTable(UNIVERSE)
@@ -311,7 +377,18 @@ function playPauseToggle(){
 }
 
 function edit(){
+    EDIT_TOOL_TEMPLATE = []
     PLAY_PAUSE = false
+}
+
+function editGlider(){
+    EDIT_TOOL_TEMPLATE = [
+        [0,0,1],
+        [1,0,1],
+        [0,1,1],
+    ]
+    PLAY_PAUSE = false
+
 }
 
 function nextStep(){
@@ -408,6 +485,7 @@ function init(){
     document.getElementById('playPauseButton').onclick = playPauseToggle
     document.getElementById('nextStepButton').onclick = nextStep
     document.getElementById('editButton').onclick = edit
+    document.getElementById('editGliderButton').onclick = editGlider
     document.getElementById('clearButton').onclick = clear
     document.getElementById('chaosPatternButton').onclick = chaosPattern
     document.getElementById('gliderGunButton').onclick = gliderGun
