@@ -188,8 +188,10 @@ function rezoomCanvas(){
 
 function editCanvasCell(e){
     let canvas = document.getElementById('mainCanvas')
-    let x = e.clientX - canvas.offsetLeft
-    let y = e.clientY - canvas.offsetTop
+    let rect = canvas.getBoundingClientRect()
+    let x = e.clientX - rect.left
+    let y = e.clientY - rect.top
+
     let xx = Math.floor(x/ZOOM_LEVEL)+1
     let yy = Math.floor(y/ZOOM_LEVEL)+1
     let currentState = UNIVERSE[yy][xx]
