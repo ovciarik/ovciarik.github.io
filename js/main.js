@@ -248,7 +248,9 @@ function editCanvasCell(e){
         EDIT_TOOL_TEMPLATE.forEach( aa => {
             let b = 0 
             aa.forEach( bb => {
-                UNIVERSE[yy+b][xx+a] = bb
+                if (UNIVERSE[yy+b] && UNIVERSE[yy+b][xx+a] !== undefined){
+                    UNIVERSE[yy+b][xx+a] = bb
+                }
                 // console.log(bb)
 
                 b += 1
@@ -361,7 +363,9 @@ function editTableCell(cell){
         EDIT_TOOL_TEMPLATE.forEach( aa => {
             let b = 0 
             aa.forEach( bb => {
-                UNIVERSE[Number(x)+a][Number(y)+b] = bb
+                if (UNIVERSE[Number(x)+a] && UNIVERSE[Number(x)+a][Number(y)+b] !== undefined){
+                    UNIVERSE[Number(x)+a][Number(y)+b] = bb
+                }
                 b += 1
             })
             a += 1
