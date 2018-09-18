@@ -19,6 +19,69 @@ let REDEAW_FN = redrawCanvas
 let REZOOM_FN = rezoomCanvas
 let EDIT_FN = editCanvasCell
 
+let TEMPLATES = {
+    'Glider': [
+        [0,0,1],
+        [1,0,1],
+        [0,1,1],
+    ],
+    'LWSS': [
+        [1,0,0,1,0,],
+        [0,0,0,0,1,],
+        [1,0,0,0,1,],
+        [0,1,1,1,1,],
+
+    ],
+    'Chaos': [
+        [1,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,1,1,1,1,1]
+    ],
+    'Glider gun':[
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,],
+        [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,],
+        [1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+        [1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
+    ],
+    'Pulsar':[
+        [0,0,1,1,1,0,0,0,1,1,1,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1,],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0,],
+
+    ],
+    'Pentadecathlon':[
+        [0,1,0],
+        [0,1,0],
+        [1,1,1],
+        [0,0,0],
+        [0,0,0],
+        [1,1,1],
+        [0,1,0],
+        [0,1,0],
+        [0,1,0],
+        [0,1,0],
+        [1,1,1],
+        [0,0,0],
+        [0,0,0],
+        [1,1,1],
+        [0,1,0],
+        [0,1,0],
+    ]
+}
+
 // utils
 function* intGenerator(start, stop){
     while (start < stop) {
@@ -206,7 +269,7 @@ function canvasDrawTemplate(mouseX, mouseY, template){
     for(let y=0; y<templateSizeY; y++){
         for(let x=0; x<templateSizeX; x++){
 
-            let cell = template[y][x]
+            let cell = template[x][y]
 
             if (cell === 0) {
                 ctx.fillStyle = LIGHT_GREY
@@ -233,8 +296,6 @@ function editCanvasCell(e){
     let yy = Math.floor(y/ZOOM_LEVEL)+1
     let currentState = UNIVERSE[yy][xx]
 
-
-
     // canvasDrawTemplate(x, y, TEMPLATE)
 
     if (!(EDIT_TOOL_TEMPLATE && EDIT_TOOL_TEMPLATE.length > 0)){
@@ -248,8 +309,8 @@ function editCanvasCell(e){
         EDIT_TOOL_TEMPLATE.forEach( aa => {
             let b = 0 
             aa.forEach( bb => {
-                if (UNIVERSE[yy+b] && UNIVERSE[yy+b][xx+a] !== undefined){
-                    UNIVERSE[yy+b][xx+a] = bb
+                if (UNIVERSE[xx+a] && UNIVERSE[xx+a][yy+b] !== undefined){
+                    UNIVERSE[yy+a][xx+b] = bb
                 }
                 // console.log(bb)
 
@@ -385,16 +446,6 @@ function edit(){
     PLAY_PAUSE = false
 }
 
-function editGlider(){
-    EDIT_TOOL_TEMPLATE = [
-        [0,0,1],
-        [1,0,1],
-        [0,1,1],
-    ]
-    PLAY_PAUSE = false
-
-}
-
 function nextStep(){
     if (!PLAY_PAUSE){
         UNIVERSE = calculateNextState(UNIVERSE)
@@ -404,12 +455,6 @@ function nextStep(){
 
 function clear(){
     UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
-    REDEAW_FN(UNIVERSE)
-}
-
-function chaosPattern(){
-    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
-    UNIVERSE = generateChaosPattern(UNIVERSE)
     REDEAW_FN(UNIVERSE)
 }
 
@@ -483,21 +528,43 @@ function changeDrawingAPI(){
     PLAY_PAUSE = oldPlayState
 }
 
+function noTemplate(){
+    EDIT_TOOL_TEMPLATE = []
+
+}
+
+function changeTemplate(e){
+    let key = e['target']['id'].substring(9)
+    EDIT_TOOL_TEMPLATE = TEMPLATES[key]
+}
+
 // init, mainLoop, main
+function generateTemplateButtons(){
+    let templateMenu = document.getElementById('template-content')
+    Object.keys(TEMPLATES).forEach(templateName => {
+        let templateSelector = document.createElement('button')
+        templateSelector.id = `template_${templateName}`
+        templateSelector.innerHTML = templateName
+        templateSelector.onclick = changeTemplate
+        templateMenu.appendChild(templateSelector)
+    })
+}
+
 function init(){
     // Add event listeners
     document.getElementById('playPauseButton').onclick = playPauseToggle
     document.getElementById('nextStepButton').onclick = nextStep
     document.getElementById('editButton').onclick = edit
-    document.getElementById('editGliderButton').onclick = editGlider
     document.getElementById('clearButton').onclick = clear
-    document.getElementById('chaosPatternButton').onclick = chaosPattern
-    document.getElementById('gliderGunButton').onclick = gliderGun
     document.getElementById('zoomInButton').onclick = zoomIn
     document.getElementById('zoomOutButton').onclick = zoomOut
     document.getElementById('importButton').onchange = fnImport
     document.getElementById('exportButton').onclick = fnExport
     document.getElementById('changeDrawingAPIButton').onclick = changeDrawingAPI
+
+    document.getElementById('cellSwitcher').onclick = noTemplate
+    
+    generateTemplateButtons()
 
     // generate initial state
     UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
