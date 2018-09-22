@@ -1,5 +1,5 @@
 const DIMENSION_Y = 152
-const DIMENSION_X = 152
+const DIMENSION_X = 302
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -486,7 +486,7 @@ function editCanvasCell(e){
         EDIT_TOOL_TEMPLATE.forEach( aa => {
             let b = 0 
             aa.forEach( bb => {
-                if (UNIVERSE[xx+a] && UNIVERSE[xx+a][yy+b] !== undefined){
+                if (UNIVERSE[yy+a] && UNIVERSE[yy+a][xx+b] !== undefined){
                     UNIVERSE[yy+a][xx+b] = bb
                 }
                 // console.log(bb)
