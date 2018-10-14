@@ -12,9 +12,10 @@ green
 #2e8b57
 */
 
-body {
+html body {
 	background-color: #4f4f57;
 	font-family: 'Source Code Pro', monospace;
+	font-size: 14pt;
 }
 
 #container {
@@ -35,24 +36,17 @@ body {
 
 	display: flex;
 	flex-direction: row;
-	/* justify-content: flex-start; */
+	justify-content: flex-start;
 	flex-wrap: wrap;
 
 }
 
 #topnav button {
-	margin: 0px 0px 0px 0px;
-	/* height: 40px; */
-
 	background: none;
-	/* box-shadow: none; */
 	border: 1px solid #9499a5;
 	color: #9499a5;
 	text-align: center;
-	padding: 14px 14px 14px 14px;
-	/* text-decoration: none; */
-	font-size: 14px;
-	font-weight: bold;
+	padding: 12px;
 }
 
 #topnav button:hover {
@@ -66,18 +60,11 @@ body {
 
 	padding: 0px 0px 0px 0px;
 	background: #2a2b2f;
-	/* min-height: 100vh; */
 	overflow: auto;
 }
 
 #topnav input[type="file"] {
 	display: none;
-	/* visibility: hidden; */
-}
-
-#importButtonDiv {
-	display: flex
-
 }
 
 #topnav .custom-file-upload {
@@ -85,11 +72,8 @@ body {
 	border: 1px solid #9499a5;
 	color: #9499a5;
 
-	padding-left: 14px;
-	padding-right: 14px;
-	text-decoration: none;
-	font-size: 14px;
-	font-weight: bold;
+	padding-left: 12px;
+	padding-right: 12px;
 
 	display: flex;
 	align-items: center;

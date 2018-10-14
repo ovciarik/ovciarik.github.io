@@ -1,42 +1,40 @@
 <!doctype html>
 <html class="no-js" lang="">
 <head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" type="text/css" href="css/normalize.css">
-  <link rel="stylesheet" type="text/css" href="css/main.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
+	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet"> 
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/main.js"></script>
 </head>
 <body>
 	<div id="container">
-  <div id="topnav">
-    <button class="menu_button" id="FPS">FPS: 000</button>
-    <button id="playPauseButton">Play/Pause</button>
-    <button id="nextStepButton">Next Step</button>
-    <button id="editButton">Edit</button>
-    <div class="dropdown">
-    <button id="dropbtn">Select template</button>
-      <div class="dropdown-content" id="template-content">
-        <button id="cellSwitcher">Cell switcher</button>
-      </div>
-    </div> 
+	<div id="topnav">
+		<button class="menu_button" id="FPS">FPS: 000</button>
+		<button id="playPauseButton">Play/Pause</button>
+		<button id="nextStepButton">Next Step</button>
+		<button id="editButton">Edit</button>
+		<div class="dropdown">
+			<button id="dropbtn">Select template</button>
+				<div class="dropdown-content" id="template-content">
+					<button id="cellSwitcher">Cell switcher</button>
+				</div>
+		</div> 
+		<button id="clearButton">Clear</button>
+		<button id="zoomInButton">Zoom in</button>
+		<button id="zoomOutButton">Zoom out</button>
 
-    <button id="clearButton">Clear</button>
-    <button id="zoomInButton">Zoom in</button>
-    <button id="zoomOutButton">Zoom out</button>
+		<label for="importButton" class="custom-file-upload">
+			<i class="fa fa-cloud-upload"></i> Import
+		</label>
 
-    <label for="importButton" class="custom-file-upload">
-      <i class="fa fa-cloud-upload"></i> Import
-    </label>
-    <input id="importButton" type="file"/>
+		<input id="importButton" type="file"/>
 
-    <button id="exportButton">Export</button>
-
-    <button id="changeDrawingAPIButton">Change Drawing API (Current: Canvas)</button>
-
-
-  </div> 
+		<button id="exportButton">Export</button>
+		<button id="changeDrawingAPIButton">Change Drawing API (Current: Canvas)</button>
+	</div> 
 	<div id='universe'></div>
 </div>
-  <script src="js/main.js"></script>
 </body>
 </html>

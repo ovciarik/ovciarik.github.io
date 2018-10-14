@@ -1,5 +1,5 @@
 const DIMENSION_Y = 152
-const DIMENSION_X = 302
+const DIMENSION_X = 152
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -776,4 +776,4 @@ function main(){
     mainLoop()
 }
 
-main()
+window.onload = main
