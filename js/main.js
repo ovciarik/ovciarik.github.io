@@ -619,7 +619,7 @@ function playPauseToggle(){
 }
 
 function edit(){
-	EDIT_TOOL_TEMPLATE = []
+	EDIT_TOOL_TEMPLATE = ''
 	PLAY_PAUSE = false
 }
 
@@ -706,16 +706,24 @@ function changeDrawingAPI(){
 }
 
 function noTemplate(){
-	EDIT_TOOL_TEMPLATE = []
+	document.getElementById(`template_${LAST_KEY}`).classList.remove('active')
+	document.getElementById(`template_`).classList.add('active')
+	EDIT_TOOL_TEMPLATE = ''
+	LAST_KEY = ''
 
 }
+
+let LAST_KEY = ''
 
 function changeTemplate(e){
 	let key = e['target']['id'].substring(9)
+	document.getElementById(`template_${LAST_KEY}`).classList.remove('active')
+	LAST_KEY = e['target']['id'].substring(9)
+	e['target'].classList.add('active')
 	EDIT_TOOL_TEMPLATE = TEMPLATES[key]
 }
 
-// init, mainLoop, main
+// init, ma25inLoop, main
 function generateTemplateButtons(){
 	let templateMenu = document.getElementById('template-content')
 	Object.keys(TEMPLATES).forEach(templateName => {
@@ -740,7 +748,7 @@ function init(){
 	document.getElementById('exportButton').onclick = fnExport
 	document.getElementById('changeDrawingAPIButton').onclick = changeDrawingAPI
 
-	document.getElementById('cellSwitcher').onclick = noTemplate
+	document.getElementById('template_').onclick = noTemplate
 	
 	generateTemplateButtons()
 

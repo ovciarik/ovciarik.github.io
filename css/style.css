@@ -32,27 +32,29 @@ body {
 
 #container {
 	font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace;
-	font-size: 12pt;
+	font-size: 14pt;
 	font-weight: bold;
 	background-color: #2a2b2f;
 
 	height: 100vh;
 
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	justify-content: flex-start;
 
 	overflow: auto;
 }
 
-#topnav {
-	flex: 0 0 auto;
+#sidebar {
+	/* flex: 0 0 300px; */
+	flex: 0 0 12em;
 
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: flex-start;
 	flex-wrap: wrap;
 
+	overflow: auto;
 }
 
 #universe {
@@ -66,15 +68,16 @@ body {
 
 /* Regular button */
 
-#topnav .button  {
-	padding: 10px 14px 10px 14px;
+#sidebar .button  {
+	/* padding: 10px 14px 10px 14px; */
+	padding: 0.5em;
 	border: 1px solid #9499a5;
 	background-color: #2a2b2f;
 	color: #9499a5;
 
 }
 
-#topnav .button:hover {
+#sidebar .button:hover {
 	background-color: #9499a5;
 	color: #2a2b2f;
 }
@@ -84,13 +87,14 @@ body {
 
 .dropdown {
 	/* relative position because we want absolute dropdon on same position */
-	position: relative;
+	/* position: relative; */
 }
 
 .dropdown-content {
 	/* position dropdown at same position os dropbown menu button */
 	position: absolute;
 	top: 0;
+	left: 12em;
 
 	display: none;
 }
@@ -98,4 +102,33 @@ body {
 .dropdown:hover .dropdown-content {
 	display: flex;
 	flex-direction: column;
+}
+
+.dropdown-content .button {
+	width: 12em;
+}
+
+.dropdown-content .active {
+	background-color: #2e8b57 !important;
+	color: #2a2b2f !important; 
+}
+
+@media only screen and (max-device-width: 767px) {
+
+	#container {
+		flex-direction: column;
+	}
+
+	#sidebar {
+		flex: 0 0 auto;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.dropdown-content {
+		left: 0;
+	}
+
 }
