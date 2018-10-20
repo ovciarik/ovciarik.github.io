@@ -333,7 +333,6 @@ function initCanvas(){
     canvas.width = (DIMENSION_X-2)*ZOOM_LEVEL
     canvas.height = (DIMENSION_Y-2)*ZOOM_LEVEL
     canvas.style.position = 'absolute'
-    // canvas.style.zIndex = -1 
 
 
     ctx.fillStyle = LIGHT_GREY
@@ -342,7 +341,6 @@ function initCanvas(){
 
     // ctx.beginPath()
 
-    canvas.onmousedown = EDIT_FN
 
     let canvas2 = document.createElement('canvas')
     let ctx2 = canvas2.getContext('2d')
@@ -369,6 +367,8 @@ function initCanvas(){
         // ctx2.strokeStyle = '#0F0'
         ctx2.stroke()
     }
+
+    canvas2.onmousedown = EDIT_FN
 
     universe.appendChild(canvas)
     universe.appendChild(canvas2)

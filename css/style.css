@@ -95,6 +95,7 @@ body {
 	position: absolute;
 	top: 0;
 	left: 12em;
+	z-index: 2;
 
 	display: none;
 }
