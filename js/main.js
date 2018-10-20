@@ -1,5 +1,5 @@
-const DIMENSION_Y = 202
-const DIMENSION_X = 202
+const DIMENSION_Y = 1002
+const DIMENSION_X = 1002
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -715,7 +715,6 @@ function mainLoop(){
         let stopTime = window.performance.now()
         console.log(`calculation time: ${betweenTime-startTime}`)
         console.log(`visualisation time: ${stopTime-betweenTime}`)
-        console.log(JSON.stringify(UNIVERSE))
         let totalLoopTime = stopTime-startTime
 
         let fps = Math.floor(1000/totalLoopTime)
