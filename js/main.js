@@ -1,6 +1,9 @@
 const DIMENSION_Y = 152
 const DIMENSION_X = 152
 
+// const DIMENSION_Y = 302
+// const DIMENSION_X = 302
+
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
 const LIGHT_GREY = '#9499a5'
@@ -356,25 +359,23 @@ function initCanvas(){
 function redrawCanvas(state){
     let canvas = document.getElementById('mainCanvas')
     let ctx = canvas.getContext('2d')
-    let x = 0
-    state.forEach(row => {
-        let y = 0
-        row.forEach( cell => {
-            if (x > 0 && y > 0 && x < DIMENSION_Y_1*ZOOM_LEVEL && y < DIMENSION_X_1*ZOOM_LEVEL){
-                if (cell === 0) {
-                    ctx.fillStyle = GREY
 
-                } else {
-                    ctx.fillStyle = GREEN
-                }
-                
+    // ctx.fillStyle is expensive
+    ctx.fillStyle = GREEN
+    // for loops are faster than forEach
+    for (let x = 1; x < DIMENSION_X; x++ ) {
+        for (let y = 1; y < DIMENSION_Y; y++ ) {
+            state[x][y] && ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL+1, x*ZOOM_LEVEL-ZOOM_LEVEL+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
+        }
+    }
 
-                ctx.fillRect(y-ZOOM_LEVEL+1, x-ZOOM_LEVEL+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
-            }
-            y += ZOOM_LEVEL
-        })
-        x += ZOOM_LEVEL
-    })
+    ctx.fillStyle = GREY
+    for (let x = 1; x < DIMENSION_X; x++ ) {
+        for (let y = 1; y < DIMENSION_Y; y++ ) {
+            state[x][y] || ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL+1, x*ZOOM_LEVEL-ZOOM_LEVEL+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
+        }
+    }
+
     return state
 }
 
@@ -731,10 +732,12 @@ function init(){
 
 function mainLoop(){
     if (PLAY_PAUSE){
-        let startTime = Date.now()
+        let startTime = window.performance.now()
         UNIVERSE = calculateNextState(UNIVERSE)
+        let betweenTime = window.performance.now()
         REDEAW_FN(UNIVERSE)
-        let stopTime = Date.now()
+        let stopTime = window.performance.now()
+        console.log(`visualisation time: ${stopTime-betweenTime}`)
         let totalLoopTime = stopTime-startTime
         let fps = Math.floor(1000/totalLoopTime)
         if (fps >= 100) {
