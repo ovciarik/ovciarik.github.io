@@ -1,8 +1,5 @@
-const DIMENSION_Y = 1000
-const DIMENSION_X = 1000
-
-// const DIMENSION_Y = 500
-// const DIMENSION_X = 500
+const DIMENSION_Y = 20
+const DIMENSION_X = 20
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -278,12 +275,12 @@ function calculateNextState(state){
     let newState = []
     newState.push(new Uint8Array(DIMENSION_X))
 
-    for (let y=1; y<DIMENSION_Y; y++){
+    for (let y=1; y<DIMENSION_Y_1; y++){
         let newRow = new Uint8Array(DIMENSION_X)
-        for (let x=1; x<DIMENSION_X; x++){
+        for (let x=1; x<DIMENSION_X_1; x++){
             const cell = state[y][x]
             const aliveNeighbors = state[y-1][x-1] + state[y-1][x] + state[y-1][x+1] + state[y][x-1] + state[y][x+1] + state[y+1][x-1] + state[y+1][x] + state[y+1][x+1]
-            newRow[x] = (!( ( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ))
+            newRow[x] = (!(( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ))
         }
         newState.push(newRow)
     }
@@ -294,7 +291,7 @@ function calculateNextState(state){
 
 function generateInitialState(height, width){
     let table = []
-    for (let _ of range(0, height+1)){
+    for (let _ of range(0, height)){
         table.push(new Uint8Array(width))
     }
     return table
@@ -371,10 +368,8 @@ function redrawCanvas(state){
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     ctx.fillStyle = GREEN
-    for (let y=1; y<DIMENSION_Y; y+=1){
-        for (let x=1; x<DIMENSION_X; x+=1){
-            // state is shifted 1 row and 1 col agains view layer
-            // state[y][x] && ctx.fillRect((y-1)*ZOOM_LEVEL, (x-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+    for (let y=1; y<DIMENSION_Y_1; y++) {
+        for (let x=1; x<DIMENSION_X_1; x++) {
             state[y][x] && ctx.fillRect((x-1)*ZOOM_LEVEL, (y-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
         }
     }
@@ -720,6 +715,7 @@ function mainLoop(){
         let stopTime = window.performance.now()
         console.log(`calculation time: ${betweenTime-startTime}`)
         console.log(`visualisation time: ${stopTime-betweenTime}`)
+        console.log(JSON.stringify(UNIVERSE))
         let totalLoopTime = stopTime-startTime
 
         let fps = Math.floor(1000/totalLoopTime)
