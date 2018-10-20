@@ -378,19 +378,17 @@ function redrawCanvas(state){
     let canvas = document.getElementById('mainCanvas')
     let ctx = canvas.getContext('2d')
 
-
     ctx.fillStyle = GREY
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     ctx.fillStyle = GREEN
-    state.forEach((row, x) => {
-        row.forEach((cell, y) => {
-            cell && ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL, x*ZOOM_LEVEL-ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
-            // ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL, x*ZOOM_LEVEL-ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
-        })
-    })
+    for (let y=1; y<DIMENSION_Y; y+=1){
+        for (let x=1; x<DIMENSION_X; x+=1){
+            // state is shifted 1 row and 1 col agains view layer
+            state[x][y] && ctx.fillRect((y-1)*ZOOM_LEVEL, (x-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+        }
+    }
 
-    return state
 }
 
 function rezoomCanvas(){
