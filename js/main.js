@@ -1,5 +1,9 @@
-const DIMENSION_Y = 1002
-const DIMENSION_X = 1002
+// const DIMENSION_Y = 1002
+// const DIMENSION_X = 1002
+
+const DIMENSION_Y = 202
+const DIMENSION_X = 202
+
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -9,9 +13,15 @@ const GREEN = '#2e8b57'
 const DIMENSION_X_1 = DIMENSION_X-1
 const DIMENSION_Y_1 = DIMENSION_Y-1 
 
-let UNIVERSE = []
+const DEAD = 0
+const ALIVE = 1
+
+let U0 = []
+let U1 = []
+let UNIVERSE
+
 let PLAY_PAUSE = true
-let ZOOM_LEVEL = 2
+let ZOOM_LEVEL = 6
 let EDIT_TOOL_TEMPLATE = []
 let LAST_KEY = ''
 
@@ -261,6 +271,11 @@ let TEMPLATES = {
     ]
 }
 
+// -------------------------------------------------------------------------------------------------
+
+// TODO: draw viewport only
+
+// -------------------------------------------------------------------------------------------------
 // utils
 function* range(start, stop){
     while (start < stop) {
@@ -271,22 +286,28 @@ function* range(start, stop){
 
 // logic
 // this function is optimized for speed, so doesn't look as nice as it could
-function calculateNextState(state){
-    let newState = []
-    newState.push(new Uint8Array(DIMENSION_X))
 
+function nullStateInPlace(state){
     for (let y=1; y<DIMENSION_Y_1; y++){
-        let newRow = new Uint8Array(DIMENSION_X)
-        for (let x=1; x<DIMENSION_X_1; x++){
-            const cell = state[y][x]
-            const aliveNeighbors = state[y-1][x-1] + state[y-1][x] + state[y-1][x+1] + state[y][x-1] + state[y][x+1] + state[y+1][x-1] + state[y+1][x] + state[y+1][x+1]
-            newRow[x] = (!(( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ))
-        }
-        newState.push(newRow)
+        state[y].fill(0)
+
     }
 
-    newState.push(new Uint8Array(DIMENSION_X))
-    return newState
+}
+
+
+function calculateNextState(){
+    let newState = UNIVERSE === U0 ? U1 : U0
+
+    for (let y=1; y<DIMENSION_Y_1; y++){
+        for (let x=1; x<DIMENSION_X_1; x++){
+            const aliveNeighbors = UNIVERSE[y-1][x-1] + UNIVERSE[y-1][x] + UNIVERSE[y-1][x+1] + UNIVERSE[y][x-1] + UNIVERSE[y][x+1] + UNIVERSE[y+1][x-1] + UNIVERSE[y+1][x] + UNIVERSE[y+1][x+1]
+            // this is faster because don't have to cast bool to int
+            newState[y][x] = UNIVERSE[y][x] && aliveNeighbors === 2 || aliveNeighbors === 3 ? ALIVE : DEAD
+        }
+    }
+
+    UNIVERSE = newState
 }
 
 function generateInitialState(height, width){
@@ -577,13 +598,15 @@ function edit(){
 
 function nextStep(){
     if (!PLAY_PAUSE){
-        UNIVERSE = calculateNextState(UNIVERSE)
+        // UNIVERSE = calculateNextState(UNIVERSE)
+        calculateNextState()
         REDEAW_FN(UNIVERSE)
     }
 }
 
 function clear(){
-    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    // UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    nullStateInPlace(UNIVERSE)
     REDEAW_FN(UNIVERSE)
 }
 
@@ -599,7 +622,8 @@ function zoomOut(){
 
 function readSuccess(content){
     let pattern = JSON.parse(content.target.result)['state']
-    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    // UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    nullStateInPlace(UNIVERSE)
     UNIVERSE =  generatePattern(UNIVERSE, pattern, 0, 0)
     REDEAW_FN(UNIVERSE)
 }
@@ -696,7 +720,10 @@ function init(){
     initTemplateButtons()
 
     // generate initial state
-    UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    U0 = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    U1 = generateInitialState(DIMENSION_Y, DIMENSION_X)
+    UNIVERSE = U1
+
     let offsetX = Math.trunc(DIMENSION_X/2)
     let offsetY = Math.trunc(DIMENSION_Y/2)
     UNIVERSE = generatePattern(UNIVERSE, TEMPLATES.Chaos, offsetY, offsetX)
@@ -709,12 +736,13 @@ function init(){
 function mainLoop(){
     if (PLAY_PAUSE){
         let startTime = window.performance.now()
-        UNIVERSE = calculateNextState(UNIVERSE)
+        // UNIVERSE = calculateNextState(UNIVERSE)
+        calculateNextState()
         let betweenTime = window.performance.now()
         REDEAW_FN(UNIVERSE)
         let stopTime = window.performance.now()
-        console.log(`calculation time: ${betweenTime-startTime}`)
-        console.log(`visualisation time: ${stopTime-betweenTime}`)
+        // console.log(`calculation time: ${betweenTime-startTime}`)
+        // console.log(`visualisation time: ${stopTime-betweenTime}`)
         let totalLoopTime = stopTime-startTime
 
         let fps = Math.floor(1000/totalLoopTime)
