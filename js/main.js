@@ -1,5 +1,5 @@
-const DIMENSION_Y = 152
-const DIMENSION_X = 152
+const DIMENSION_Y = 200
+const DIMENSION_X = 200
 
 // const DIMENSION_Y = 500
 // const DIMENSION_X = 500
@@ -276,12 +276,12 @@ function* range(start, stop){
 // this function is optimized for speed, so doesn't look as nice as it could
 function calculateNextState(state){
     let newState = []
-    for (let x=0; x<DIMENSION_Y; x++){
+    for (let y=0; y<DIMENSION_Y; y++){
         let newRow = []
-        for (let y=0; y<DIMENSION_X; y++){
-            let cell = state[x][y]
-            if (x > 0 && y > 0 && x < DIMENSION_Y_1 && y < DIMENSION_X_1) {
-                let aliveNeighbors = state[x-1][y-1] + state[x-1][y] + state[x-1][y+1] + state[x][y-1] + state[x][y+1] + state[x+1][y-1] + state[x+1][y] + state[x+1][y+1]
+        for (let x=0; x<DIMENSION_X; x++){
+            let cell = state[y][x]
+            if (x > 0 && y > 0 && x < DIMENSION_X_1 && y < DIMENSION_Y_1) {
+                let aliveNeighbors = state[y-1][x-1] + state[y-1][x] + state[y-1][x+1] + state[y][x-1] + state[y][x+1] + state[y+1][x-1] + state[y+1][x] + state[y+1][x+1]
                 if ( ( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ){
                     newRow.push(0)
                 } else {
@@ -296,11 +296,11 @@ function calculateNextState(state){
     return newState
 }
 
-function generateInitialState(width, height){
+function generateInitialState(height, width){
     let table = []
-    for (let _ of range(0, width)){
+    for (let _ of range(0, height)){
         let row = []
-        for (let _ of range(0, height)){
+        for (let _ of range(0, width)){
             row.push(0)
         }
         table.push(row)
@@ -308,15 +308,16 @@ function generateInitialState(width, height){
     return table
 }
 
-function generatePattern(state, pattern, offsetX, offsetY){
-    let x = 0
+function generatePattern(state, pattern, offsetY, offsetX){
+    let y = 0
     pattern.forEach(row => {
-        let y = 0
+        let x = 0
         row.forEach(cell => {
-            state[y+offsetY][x+offsetX]= cell
-            y += 1
+            state[y+offsetY][x+offsetX] = cell
+            // state[x+offsetX][y+offsetY] = cell
+            x += 1
         })
-        x += 1
+        y += 1
     })
     return state
 }
@@ -353,16 +354,16 @@ function initCanvas(){
     // vertical line
     for (let x=0; x<=canvas2.width; x+=ZOOM_LEVEL){
         ctx2.moveTo(x+0.5, 0+0.5)
-        ctx2.lineTo(x+0.5, canvas.width+0.5)
+        ctx2.lineTo(x+0.5, canvas2.height+0.5)
         ctx2.strokeStyle = DARK_GREY
         // ctx2.strokeStyle = '#0F0'
         ctx2.stroke()
     }
 
     // horizontal line
-    for (let y=0; y<=canvas2.width; y+=ZOOM_LEVEL){
+    for (let y=0; y<=canvas2.height; y+=ZOOM_LEVEL){
         ctx2.moveTo(0+0.5, y+0.5)
-        ctx2.lineTo(canvas.width+0.5, y+0.5)
+        ctx2.lineTo(canvas2.width+0.5, y+0.5)
         ctx2.strokeStyle = DARK_GREY
         // ctx2.strokeStyle = '#0F0'
         ctx2.stroke()
@@ -385,7 +386,8 @@ function redrawCanvas(state){
     for (let y=1; y<DIMENSION_Y; y+=1){
         for (let x=1; x<DIMENSION_X; x+=1){
             // state is shifted 1 row and 1 col agains view layer
-            state[x][y] && ctx.fillRect((y-1)*ZOOM_LEVEL, (x-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+            // state[y][x] && ctx.fillRect((y-1)*ZOOM_LEVEL, (x-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+            state[y][x] && ctx.fillRect((x-1)*ZOOM_LEVEL, (y-1)*ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
         }
     }
 
@@ -734,8 +736,8 @@ function init(){
     // generate initial state
     UNIVERSE = generateInitialState(DIMENSION_Y, DIMENSION_X)
     let offsetX = Math.trunc(DIMENSION_X/2)
-    let offsetY = Math.trunc(DIMENSION_Y/2-TEMPLATES.Chaos[0].length/2)
-    UNIVERSE = generatePattern(UNIVERSE, TEMPLATES.Chaos, offsetX, offsetY)
+    let offsetY = Math.trunc(DIMENSION_Y/2)
+    UNIVERSE = generatePattern(UNIVERSE, TEMPLATES.Chaos, offsetY, offsetX)
 
     INIT_FN(UNIVERSE)
     REDEAW_FN(UNIVERSE)
