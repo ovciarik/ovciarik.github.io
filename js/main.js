@@ -14,7 +14,7 @@ const DIMENSION_Y_1 = DIMENSION_Y-1
 
 let UNIVERSE = []
 let PLAY_PAUSE = true
-let ZOOM_LEVEL = 10
+let ZOOM_LEVEL = 6
 let EDIT_TOOL_TEMPLATE = []
 let LAST_KEY = ''
 
