@@ -1,8 +1,8 @@
 const DIMENSION_Y = 152
 const DIMENSION_X = 152
 
-// const DIMENSION_Y = 302
-// const DIMENSION_X = 302
+// const DIMENSION_Y = 500
+// const DIMENSION_X = 500
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
@@ -313,7 +313,7 @@ function generatePattern(state, pattern, offsetX, offsetY){
     pattern.forEach(row => {
         let y = 0
         row.forEach(cell => {
-            state[x+offsetX][y+offsetY] = cell
+            state[y+offsetY][x+offsetX]= cell
             y += 1
         })
         x += 1
@@ -327,54 +327,67 @@ function initCanvas(){
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
 
+
     universe.innerHTML = ''
     canvas.id = 'mainCanvas'
     canvas.width = (DIMENSION_X-2)*ZOOM_LEVEL
     canvas.height = (DIMENSION_Y-2)*ZOOM_LEVEL
+    canvas.style.position = 'absolute'
+    // canvas.style.zIndex = -1 
+
 
     ctx.fillStyle = LIGHT_GREY
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     // ctx.stroke()
 
     // ctx.beginPath()
-    for (let x=0; x<=canvas.width; x+=ZOOM_LEVEL){
-        ctx.moveTo(x, 0)
-        ctx.lineTo(x, canvas.height)
-        ctx.strokeStyle = DARK_GREY
-        ctx.stroke()
-    }
-
-    for (let y=0; y<=canvas.height; y+=ZOOM_LEVEL){
-        ctx.moveTo(0, y)
-        ctx.lineTo(canvas.width, y)
-        ctx.strokeStyle = DARK_GREY
-        ctx.stroke()
-    }
 
     canvas.onmousedown = EDIT_FN
 
+    let canvas2 = document.createElement('canvas')
+    let ctx2 = canvas2.getContext('2d')
+    canvas2.id = 'mainCanvas2'
+    canvas2.width = (DIMENSION_X-2)*ZOOM_LEVEL
+    canvas2.height = (DIMENSION_Y-2)*ZOOM_LEVEL
+    canvas2.style.position = 'absolute'
+    canvas2.style.zIndex = 1
+
+    // vertical line
+    for (let x=0; x<=canvas2.width; x+=ZOOM_LEVEL){
+        ctx2.moveTo(x+0.5, 0+0.5)
+        ctx2.lineTo(x+0.5, canvas.width+0.5)
+        ctx2.strokeStyle = DARK_GREY
+        // ctx2.strokeStyle = '#0F0'
+        ctx2.stroke()
+    }
+
+    // horizontal line
+    for (let y=0; y<=canvas2.width; y+=ZOOM_LEVEL){
+        ctx2.moveTo(0+0.5, y+0.5)
+        ctx2.lineTo(canvas.width+0.5, y+0.5)
+        ctx2.strokeStyle = DARK_GREY
+        // ctx2.strokeStyle = '#0F0'
+        ctx2.stroke()
+    }
+
     universe.appendChild(canvas)
+    universe.appendChild(canvas2)
 }
 
 function redrawCanvas(state){
     let canvas = document.getElementById('mainCanvas')
     let ctx = canvas.getContext('2d')
 
-    // ctx.fillStyle is expensive
-    ctx.fillStyle = GREEN
-    // for loops are faster than forEach
-    for (let x = 1; x < DIMENSION_X; x++ ) {
-        for (let y = 1; y < DIMENSION_Y; y++ ) {
-            state[x][y] && ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL+1, x*ZOOM_LEVEL-ZOOM_LEVEL+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
-        }
-    }
 
     ctx.fillStyle = GREY
-    for (let x = 1; x < DIMENSION_X; x++ ) {
-        for (let y = 1; y < DIMENSION_Y; y++ ) {
-            state[x][y] || ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL+1, x*ZOOM_LEVEL-ZOOM_LEVEL+1, ZOOM_LEVEL-1, ZOOM_LEVEL-1)
-        }
-    }
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.fillStyle = GREEN
+    state.forEach((row, x) => {
+        row.forEach((cell, y) => {
+            cell && ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL, x*ZOOM_LEVEL-ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+        })
+    })
 
     return state
 }
@@ -737,9 +750,12 @@ function mainLoop(){
         let betweenTime = window.performance.now()
         REDEAW_FN(UNIVERSE)
         let stopTime = window.performance.now()
-        console.log(`visualisation time: ${stopTime-betweenTime}`)
+        // console.log(`calculation time: ${betweenTime-startTime}`)
+        // console.log(`visualisation time: ${stopTime-betweenTime}`)
         let totalLoopTime = stopTime-startTime
+
         let fps = Math.floor(1000/totalLoopTime)
+
         if (fps >= 100) {
             document.getElementById('FPS').innerHTML = `FPS: ${fps}`
         } else if (fps >= 10) {
