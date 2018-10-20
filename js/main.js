@@ -1,5 +1,5 @@
-const DIMENSION_Y = 200
-const DIMENSION_X = 200
+const DIMENSION_Y = 1000
+const DIMENSION_X = 1000
 
 // const DIMENSION_Y = 500
 // const DIMENSION_X = 500
@@ -14,7 +14,7 @@ const DIMENSION_Y_1 = DIMENSION_Y-1
 
 let UNIVERSE = []
 let PLAY_PAUSE = true
-let ZOOM_LEVEL = 6
+let ZOOM_LEVEL = 2
 let EDIT_TOOL_TEMPLATE = []
 let LAST_KEY = ''
 
@@ -276,34 +276,26 @@ function* range(start, stop){
 // this function is optimized for speed, so doesn't look as nice as it could
 function calculateNextState(state){
     let newState = []
-    for (let y=0; y<DIMENSION_Y; y++){
-        let newRow = []
-        for (let x=0; x<DIMENSION_X; x++){
-            let cell = state[y][x]
-            if (x > 0 && y > 0 && x < DIMENSION_X_1 && y < DIMENSION_Y_1) {
-                let aliveNeighbors = state[y-1][x-1] + state[y-1][x] + state[y-1][x+1] + state[y][x-1] + state[y][x+1] + state[y+1][x-1] + state[y+1][x] + state[y+1][x+1]
-                if ( ( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ){
-                    newRow.push(0)
-                } else {
-                    newRow.push(1)
-                }
-            } else {
-                newRow.push(0)
-            }
+    newState.push(new Uint8Array(DIMENSION_X))
+
+    for (let y=1; y<DIMENSION_Y; y++){
+        let newRow = new Uint8Array(DIMENSION_X)
+        for (let x=1; x<DIMENSION_X; x++){
+            const cell = state[y][x]
+            const aliveNeighbors = state[y-1][x-1] + state[y-1][x] + state[y-1][x+1] + state[y][x-1] + state[y][x+1] + state[y+1][x-1] + state[y+1][x] + state[y+1][x+1]
+            newRow[x] = (!( ( (cell === 0) && (aliveNeighbors !== 3) ) || ( (cell === 1) && ( (aliveNeighbors <= 1) || (aliveNeighbors >= 4) ) ) ))
         }
         newState.push(newRow)
     }
+
+    newState.push(new Uint8Array(DIMENSION_X))
     return newState
 }
 
 function generateInitialState(height, width){
     let table = []
-    for (let _ of range(0, height)){
-        let row = []
-        for (let _ of range(0, width)){
-            row.push(0)
-        }
-        table.push(row)
+    for (let _ of range(0, height+1)){
+        table.push(new Uint8Array(width))
     }
     return table
 }
@@ -328,21 +320,18 @@ function initCanvas(){
     let canvas = document.createElement('canvas')
     let ctx = canvas.getContext('2d')
 
-
     universe.innerHTML = ''
+
+    // cells canvas
     canvas.id = 'mainCanvas'
     canvas.width = (DIMENSION_X-2)*ZOOM_LEVEL
     canvas.height = (DIMENSION_Y-2)*ZOOM_LEVEL
     canvas.style.position = 'absolute'
 
-
     ctx.fillStyle = LIGHT_GREY
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    // ctx.stroke()
 
-    // ctx.beginPath()
-
-
+    // grid canvas
     let canvas2 = document.createElement('canvas')
     let ctx2 = canvas2.getContext('2d')
     canvas2.id = 'mainCanvas2'
@@ -352,20 +341,19 @@ function initCanvas(){
     canvas2.style.zIndex = 1
 
     // vertical line
+    // 0.5 because we want 1px line
     for (let x=0; x<=canvas2.width; x+=ZOOM_LEVEL){
-        ctx2.moveTo(x+0.5, 0+0.5)
+        ctx2.moveTo(x+0.5, 0.5)
         ctx2.lineTo(x+0.5, canvas2.height+0.5)
         ctx2.strokeStyle = DARK_GREY
-        // ctx2.strokeStyle = '#0F0'
         ctx2.stroke()
     }
 
     // horizontal line
     for (let y=0; y<=canvas2.height; y+=ZOOM_LEVEL){
-        ctx2.moveTo(0+0.5, y+0.5)
+        ctx2.moveTo(0.5, y+0.5)
         ctx2.lineTo(canvas2.width+0.5, y+0.5)
         ctx2.strokeStyle = DARK_GREY
-        // ctx2.strokeStyle = '#0F0'
         ctx2.stroke()
     }
 
@@ -394,28 +382,7 @@ function redrawCanvas(state){
 }
 
 function rezoomCanvas(){
-    let canvas =  document.getElementById('mainCanvas')
-    let ctx = canvas.getContext('2d')
-    canvas.width = (DIMENSION_X-2)*ZOOM_LEVEL
-    canvas.height = (DIMENSION_Y-2)*ZOOM_LEVEL
-
-    ctx.fillStyle = LIGHT_GREY
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    for (let x=0; x<=canvas.width; x+=ZOOM_LEVEL){
-        ctx.moveTo(x, 0)
-        ctx.lineTo(x, canvas.height)
-        ctx.strokeStyle = DARK_GREY
-        ctx.stroke()
-    }
-
-    for (let y=0; y<=canvas.height; y+=ZOOM_LEVEL){
-        ctx.moveTo(0, y)
-        ctx.lineTo(canvas.width, y)
-        ctx.strokeStyle = DARK_GREY
-        ctx.stroke()
-    }
-
+    initCanvas()
     redrawCanvas(UNIVERSE)
 }
 
@@ -562,7 +529,7 @@ function rezoomTable(state){
     state.forEach(row => {
         let y = 0
         row.forEach(_ => {
-            if (x > 0 && y > 0 && x < DIMENSION_Y_1 && y < DIMENSION_X_1){
+            if (x > 0 && y > 0 && x < DIMENSION_X_1 && y < DIMENSION_Y_1){
                 let elem = document.getElementById(`${x}_${y}`)
                 elem.style['height'] = `${zoomLevel}px`
                 elem.style['min-width'] = `${zoomLevel}px`
@@ -751,8 +718,8 @@ function mainLoop(){
         let betweenTime = window.performance.now()
         REDEAW_FN(UNIVERSE)
         let stopTime = window.performance.now()
-        // console.log(`calculation time: ${betweenTime-startTime}`)
-        // console.log(`visualisation time: ${stopTime-betweenTime}`)
+        console.log(`calculation time: ${betweenTime-startTime}`)
+        console.log(`visualisation time: ${stopTime-betweenTime}`)
         let totalLoopTime = stopTime-startTime
 
         let fps = Math.floor(1000/totalLoopTime)
