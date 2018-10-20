@@ -386,6 +386,7 @@ function redrawCanvas(state){
     state.forEach((row, x) => {
         row.forEach((cell, y) => {
             cell && ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL, x*ZOOM_LEVEL-ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
+            // ctx.fillRect(y*ZOOM_LEVEL-ZOOM_LEVEL, x*ZOOM_LEVEL-ZOOM_LEVEL, ZOOM_LEVEL, ZOOM_LEVEL)
         })
     })
 
