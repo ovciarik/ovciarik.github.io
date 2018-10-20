@@ -1,5 +1,5 @@
-const DIMENSION_Y = 20
-const DIMENSION_X = 20
+const DIMENSION_Y = 202
+const DIMENSION_X = 202
 
 const DARK_GREY = '#2a2b2f'
 const GREY = '#4f4f57'
