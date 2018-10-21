@@ -12,14 +12,10 @@ green
 #2e8b57
 */
 
-/* ---------------------------------------------------------------------------------------------- */
-
 body {
 	margin: 0;
 	background-color: #2a2b2f;
 }
-
-/* ---------------------------------------------------------------------------------------------- */
 
 /* Import Input */
 
@@ -27,14 +23,12 @@ body {
 	display: none;
 }
 
-/* ---------------------------------------------------------------------------------------------- */
-
 /* Main layout */
 
-#container {
+.container {
 	font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace;
 	font-size: 14pt;
-	font-weight: bold;
+	/* font-weight: bold; */
 	background-color: #2a2b2f;
 
 	height: 100vh;
@@ -46,8 +40,7 @@ body {
 	overflow: auto;
 }
 
-#sidebar {
-	/* flex: 0 0 300px; */
+.sidebar {
 	flex: 0 0 12em;
 
 	display: flex;
@@ -64,56 +57,49 @@ body {
 	overflow: auto;
 }
 
-/* ---------------------------------------------------------------------------------------------- */
-
-
 /* Regular button */
 
-#sidebar .button  {
-	/* padding: 10px 14px 10px 14px; */
+.sidebar .button  {
 	padding: 0.5em;
 	border: 1px solid #9499a5;
+	border-top: 0px;
 	background-color: #2a2b2f;
 	color: #9499a5;
 
 }
 
-#sidebar .button:hover {
+.sidebar .button:hover {
 	background-color: #9499a5;
 	color: #2a2b2f;
 }
 
-
 /* Dropdown menu */
-
-.dropdown {
-	/* relative position because we want absolute dropdon on same position */
-	/* position: relative; */
-}
-
-.dropdown-content {
-	/* position dropdown at same position os dropbown menu button */
-	position: absolute;
-	top: 0;
-	left: 12em;
-	z-index: 2;
-
-	display: none;
-}
 
 .dropdown:hover .dropdown-content {
 	display: flex;
 	flex-direction: column;
 }
 
+.dropdown-content {
+	position: absolute;
+	top: 0;
+	left: 12em;
+
+	z-index: 2;
+
+	display: none;
+}
+
 .dropdown-content .button {
 	width: 12em;
 }
 
-.dropdown-content .active {
-	background-color: #2e8b57 !important;
-	color: #2a2b2f !important; 
+.dropdown-content .button.active {
+	background-color: #2e8b57;
+	color: #2a2b2f; 
 }
+
+/* Phone layout */
 
 @media only screen and (max-device-width: 767px) {
 
